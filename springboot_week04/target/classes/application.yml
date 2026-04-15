@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: springboot_week04
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+team:
+  leader: 张三
+  age: 35
+  email: zhangsan@example.com
+  phone: '12345678901'
+  createTime: '2024-01-01'
+
+upload:
+  path: D:/uploads/

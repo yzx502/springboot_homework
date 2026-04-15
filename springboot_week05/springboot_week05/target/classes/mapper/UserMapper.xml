@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springboot_week05.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.example.springboot_week05.entity.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="age" column="age"/>
+        <result property="email" column="email"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, password, age, email, create_time
+    </sql>
+
+    <select id="selectByCondition" resultMap="UserResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        <where>
+            <if test="username != null and username != ''">
+                AND username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="minAge != null">
+                AND age &gt;= #{minAge}
+            </if>
+            <if test="maxAge != null">
+                AND age &lt;= #{maxAge}
+            </if>
+            <if test="email != null and email != ''">
+                AND email LIKE CONCAT('%', #{email}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="batchInsert">
+        INSERT INTO user(username, password, age, email, create_time) VALUES
+        <foreach collection="users" item="user" separator=",">
+            (#{user.username}, #{user.password}, #{user.age}, #{user.email}, NOW())
+        </foreach>
+    </insert>
+
+    <delete id="batchDelete">
+        DELETE FROM user WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateSelective">
+        UPDATE user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByChoice" resultMap="UserResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        <where>
+            <choose>
+                <when test="searchType == 'username'">
+                    AND username = #{searchValue}
+                </when>
+                <when test="searchType == 'email'">
+                    AND email = #{searchValue}
+                </when>
+                <otherwise>
+                    AND age &gt;= #{searchValue}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="selectPageWithCondition" resultMap="UserResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        <where>
+            <if test="params.username != null and params.username != ''">
+                AND username LIKE CONCAT('%', #{params.username}, '%')
+            </if>
+            <if test="params.minAge != null">
+                AND age &gt;= #{params.minAge}
+            </if>
+            <if test="params.maxAge != null">
+                AND age &lt;= #{params.maxAge}
+            </if>
+            <if test="params.email != null and params.email != ''">
+                AND email LIKE CONCAT('%', #{params.email}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+</mapper>
