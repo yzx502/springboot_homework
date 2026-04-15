@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+spring:
+  appllication:
+    name:SpringBoot_week03-test
+
+app:
+  app-name: "企业后台管理系统"
+  version: 1.0.2
+  description: 基于 Spring Boot 3.5.11 for development
+  author:
+    name: yzx
+    email: 2411396953@qq.com
+  features:
+    - Built with Spring Boot 3.5.11
+    - Test profile enabled
+    - Integrated Spring Data JPA
+    - Integrated Spring Data Redis
+  published: false
